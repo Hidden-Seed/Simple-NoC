@@ -1,0 +1,1 @@
+VSRC += vsrc/include/definitions.sv
