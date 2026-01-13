@@ -1,7 +1,7 @@
 module Buffer_Unit #(
-        parameter DATA_WIDTH = 18,
+        parameter DATA_WIDTH      = 18,
         parameter MAX_PACKET_SIZE = 64,
-        parameter ADDRESS_SIZE = 4
+        parameter ADDRESS_SIZE    = 4
     ) (
         clk, rst,
         in , out,
@@ -9,7 +9,7 @@ module Buffer_Unit #(
         dest
     );
 
-    input clk, rst;
+    input    clk, rst;
     ReqAckIO in;
     ReqAckIO out;
     ReqGntIO swicth_allocator_io;
@@ -19,7 +19,7 @@ module Buffer_Unit #(
     initial begin
         if (in.DATA_WIDTH != DATA_WIDTH || out.DATA_WIDTH != DATA_WIDTH) begin
             $error("Data Width incompatiblity in module Buffer_Unit");
-            $stop;
+            $stop();
         end
     end
 

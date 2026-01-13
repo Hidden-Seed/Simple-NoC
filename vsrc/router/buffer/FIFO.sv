@@ -6,15 +6,14 @@ module FIFO #(
         input rst,
         FifoIO fifo_io
     );
-    localparam buffer_bit_width = $clog2(FIFO_SIZE);
+    localparam buffer_bit_width  = $clog2(FIFO_SIZE);
     localparam counter_bit_width = $clog2(FIFO_SIZE + 1);
 
     // Internal signals
-    logic [DATA_WIDTH-1:0] fifo_mem [0:FIFO_SIZE-1];
-
-    logic full, empty;
-    logic [buffer_bit_width-1 : 0] wr_ptr, rd_ptr;
-    logic [counter_bit_width-1 : 0] count;
+    logic [DATA_WIDTH-1:0]        fifo_mem [0:FIFO_SIZE-1];
+    logic                         full, empty;
+    logic [buffer_bit_width-1:0]  wr_ptr, rd_ptr;
+    logic [counter_bit_width-1:0] count;
 
     // Write operation
     always_ff @(posedge clk, posedge rst) begin
@@ -39,7 +38,6 @@ module FIFO #(
             fifo_io.rd_data <= fifo_mem[rd_ptr];
             rd_ptr <= rd_ptr + 1;
         end
-
     end
 
     // Count management

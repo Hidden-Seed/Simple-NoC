@@ -8,10 +8,15 @@ module Out_Port_Arbiter #(
         buffer_grant
     );
 
-    input        clk, rst;
-    input  [4:0] buffer_req;
-    input  [2:0] buffer_dport[0:4];
-    output [4:0] buffer_grant;
+    input              clk, rst;
+    input        [4:0] buffer_req;
+    input        [2:0] buffer_dport [0:4];
+    output logic [4:0] buffer_grant;
+
+    logic       current_request;
+    logic [2:0] select_current_request;
+
+    integer i;
 
     always_ff @(posedge clk, posedge rst) begin
         if(rst) begin
@@ -19,7 +24,7 @@ module Out_Port_Arbiter #(
             select_current_request <= 3'b111;
         end
 
-        else if(~current_request) begin
+        else if(!current_request) begin
             buffer_grant <= 5'b0;
 
             for(i=0; i<5; i=i+1) begin
@@ -31,4 +36,7 @@ module Out_Port_Arbiter #(
             end
         end
     end
+
+    assign current_request = (select_current_request == 3'b111) ? 1'b0 :
+           buffer_req[select_current_request];
 endmodule

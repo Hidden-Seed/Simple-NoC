@@ -1,12 +1,9 @@
-`include "include/test.sv"
-`include "include/Routing_Func.sv"
-
 module Node #(
-    parameter ROUTER_ID = 0,
+    parameter ROUTER_ID     = 0,
     parameter TOTAL_UP_TIME = 3000,
-    parameter WIDTH = 4,
-    parameter LENGTH = 4,
-    parameter DELAY = 100
+    parameter WIDTH         = 4,
+    parameter LENGTH        = 4,
+    parameter DELAY         = 100
 
 )(
     clk, rst,
@@ -26,9 +23,6 @@ module Node #(
 
     reqAckVif vio_in;
     reqAckVif vio_out;
-
-    
-
 
     task automatic sendPacket();
         begin
@@ -51,7 +45,6 @@ module Node #(
         end
     endtask
 
-    
     task automatic recievePacket();
         begin
             packet recieved_packet, sent_packet;
@@ -91,7 +84,6 @@ module Node #(
         end
     endtask
 
-
     // initializing virual intefaces :
     initial begin
         vio_in = new(in);
@@ -104,9 +96,7 @@ module Node #(
         in.ack = 0;
     end
 
-
     initial begin
-
         #(DELAY);
 
         while ($time < TOTAL_UP_TIME) begin
@@ -123,6 +113,4 @@ module Node #(
             recievePacket();
         end
     end
-
-
 endmodule

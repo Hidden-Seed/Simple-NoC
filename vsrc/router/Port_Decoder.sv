@@ -11,7 +11,7 @@ module Port_Decoder #(
     localparam  TOTAL_ADDRESS_WIDTH = X_ADDRESS_WIDTH + Y_ADDRESS_WIDTH;
 
     input  [TOTAL_ADDRESS_WIDTH-1 : 0] dest_address;
-    output [2:0]                       port_address;
+    output logic [2:0]                 port_address;
 
     logic [X_ADDRESS_WIDTH-1:0] router_address_x, dest_address_x;
     logic [Y_ADDRESS_WIDTH-1:0] router_address_y, dest_address_y;
@@ -24,7 +24,7 @@ module Port_Decoder #(
             port_address = `LOCAL_PORT_ID;
 
         else if (dest_address_x == router_address_x) begin
-            if(dest_address_y > router_address_y)
+            if(dest_address_y < router_address_y)
                 port_address = `NORTH_PORT_ID;
             else   // since the y of router and dest cannot be equal, it has to go to south port
                 port_address = `SOUTH_PORT_ID;

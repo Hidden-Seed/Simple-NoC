@@ -20,28 +20,22 @@ module Buffer_Unit_TB();
 
     always #5 clk = ~clk;
 
-    task automatic send_data_to_buffer(ref logic clk, ref logic req, ref logic[`DATA_WIDTH-1:0] data, ref logic ack);
-        begin
-            @(posedge clk);
-            $display("yeee");
-            req = 1'b1;
-            data = 18'd347;
-
-            wait(ack == 1'b1);
-            req = 1'b0;
-        end
-    endtask
-
     initial begin
         #0 buffer_out.ack = 0;
         buffer_in.req     = 0;
         buffer_in.data    = 0;
         sw_all_io.grant   = 0;
-        
+
         rst = 1;
         #17 rst = 0;
 
-        #54 send_data_to_buffer(clk, buffer_in.req, buffer_in.data, buffer_in.ack);
+        #54 @(posedge clk);
+        $display("Start sending data");
+        buffer_in.req  = 1'b1;
+        buffer_in.data = 18'd347;
+        wait(buffer_in.ack == 1'b1);
+        buffer_in.req = 1'b0;
+
         #100 $finish();
     end
 

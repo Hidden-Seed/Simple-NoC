@@ -1,14 +1,4 @@
-`ifndef __TEST__
-`define __TEST__
-
-`include "../interfaces.sv"
-`include "definitions.sv"
-
-`define GENERATE_CLOCK(CLOCK, PERIOD) always begin #(PERIOD/2) CLOCK = 1'b1; #(PERIOD/2) CLOCK = 1'b0; end
-
-
-
-class reqAckVif;
+class ReqAckVif;
     virtual ReqAckIO io;
 
     function new(virtual ReqAckIO io);
@@ -17,7 +7,8 @@ class reqAckVif;
 
     task handshake_send_packet(ref logic clk, ref packet sending_packet, int packet_size);
         begin
-            io.req = 1'b1;
+            $display("Start sending packet...");
+            io.req  = 1'b1;
             io.data = sending_packet[0];
             
             wait(io.ack == 1'b1);
@@ -32,17 +23,17 @@ class reqAckVif;
                 io.data <= sending_packet[i+1];
                 @(posedge clk);
             end
+            $display("Packet sent successfully!");
         end
-        
     endtask
 
-    task handshake_recieve_packet(ref logic clk, output packet pkt);
+    task handshake_receive_packet(ref logic clk, output packet pkt);
         begin
             while(1) begin
                 @(posedge clk);
 
                 if(io.req == 1'b1) begin
-                    // $display("saw request");
+                    $display("Start receiving packet...");
                     @(posedge clk);
                     io.ack = 1'b1;
 
@@ -62,25 +53,18 @@ class reqAckVif;
                         if(io.data[17:16] == `FLIT_TAIL)
                             break;
                         @(posedge clk);
-                            
                     end
-
-                    $display("packet recieved successfully!");
+                    $display("Packet received successfully!");
                     break;
                 end
             end
-
-            $display("Done!");
-
         end
     endtask
     
-    
-
-    task handshake_recieve_packet_timeout(ref logic clk, input int timeout, output packet pkt);
+    task handshake_receive_packet_timeout(ref logic clk, input int timeout, output packet pkt);
         begin
-            int current_time = $time;
-            int recieved_data = 0;
+            int current_time  = $time;
+            int received_data = 0;
             while($time - current_time < timeout) begin
                 @(posedge clk);
 
@@ -104,27 +88,22 @@ class reqAckVif;
                         pkt[i] = io.data;
                         if(io.data[17:16] == `FLIT_TAIL)
                             break;
-                        @(posedge clk);
-                            
+                        @(posedge clk);        
                     end
 
-                    $display("packet recieved successfully!");
-                    recieved_data = 1;
+                    $display("packet received successfully!");
+                    received_data = 1;
                     break;
                 end
             end
 
-            if(!recieved_data)
+            if(!received_data)
                 $error("Timeout Error : Data did not Arrived at the expected time");
-
-
         end
     endtask
 
-
-    task handshake_try_recieve_packet(ref logic clk, output packet pkt, ref int done);
+    task handshake_try_receive_packet(ref logic clk, output packet pkt, ref int done);
         begin
-
                 if(io.req == 1'b1) begin
                     done = 1;
                     // $display("saw request");
@@ -149,16 +128,10 @@ class reqAckVif;
                         @(posedge clk);
                             
                     end
-
-                    // $display("packet recieved successfully!");
+                    // $display("packet received successfully!");
                 end
                 else
                     done = 0;
-
         end
     endtask
-
-
 endclass
-
-`endif

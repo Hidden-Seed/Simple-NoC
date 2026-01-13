@@ -66,6 +66,6 @@ module FIFO_TB();
 
     initial begin
         $fsdbDumpfile("FIFO.fsdb");
-        $fsdbDumpvars(0, FIFO_TB);
+        $fsdbDumpvars(0, FIFO_TB, "+mba");
     end
 endmodule
